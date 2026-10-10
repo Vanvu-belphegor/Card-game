@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08ad1585102a84143b63fa685d993735, type: 3}
+  m_Name: FireStorm
+  m_EditorClassIdentifier: 
+  <Description>k__BackingField: "th\xEAm  10 \u1EA5n l\u1EEDa cho to\xE0n b\u1ED9
+    k\u1EBB \u0111\u1ECBch"
+  <Mana>k__BackingField: 1
+  <Image>k__BackingField: {fileID: 0}
+  <ManualTargetEffect>k__BackingField:
+    rid: -2
+  <OtherEffects>k__BackingField:
+  - <TargetMode>k__BackingField:
+      rid: 4735811620826775566
+    <Effect>k__BackingField:
+      rid: 4735811620826775567
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4735811620826775566
+      type: {class: AllEnemiesTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 4735811620826775567
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 1
+        stackCount: 10

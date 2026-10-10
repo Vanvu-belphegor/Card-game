@@ -1,0 +1,55 @@
+﻿using UnityEngine;
+using UnityEditor;
+using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+
+namespace MaxyGames.UNode.Editors.Drawer {
+	class FunctionDrawer : UGraphElementDrawer<Function> {
+		protected override void DrawHeader(DrawerOption option) {
+			var value = option.value as Function;
+			EditorGUI.BeginDisabledGroup(value.parent is Property);
+			DrawNicelyHeader(option, value.ReturnType());
+			EditorGUI.EndDisabledGroup();
+		}
+
+		protected override void DoDraw(DrawerOption option) {
+			var value = option.value as Function;
+			bool isFromProperty = value.parent is Property;
+			if(isFromProperty == false) {
+				UInspector.Draw(option.property[nameof(Function.modifier)]);
+			}
+			EditorGUI.BeginDisabledGroup(isFromProperty);
+			uNodeGUIUtility.DrawTypeDrawer(value.ReturnType(), new GUIContent("Return Type"), type => {
+				if(type == null)
+					type = typeof(void);
+				value.returnType = type;
+				uNodeGUIUtility.GUIChangedMajor(value);
+			}, targetObject: option.unityObject, filter: new FilterAttribute() { OnlyGetType = true, VoidType = true });
+			
+			if(value.modifier.Static) {
+				bool isExtension = value.attributes.Any(a => a.attributeType == typeof(System.Runtime.CompilerServices.ExtensionAttribute));
+
+				if(isExtension != EditorGUILayout.Toggle("Extension", isExtension)) {
+					if(isExtension == false) {
+						value.attributes.Add(new AttributeData(typeof(System.Runtime.CompilerServices.ExtensionAttribute)));
+					} else {
+						var att = value.attributes.First(a => a.attributeType == typeof(System.Runtime.CompilerServices.ExtensionAttribute));
+						value.attributes.Remove(att);
+					}
+				}
+			}
+
+			UInspector.Draw(option.property[nameof(Function.parameters)]);
+			bool isInterface = option.unityObject is IScriptInterface or GraphInterface;
+			if(!isInterface) {
+				uNodeGUI.DrawAttribute(value.attributes, option.unityObject, (a) => {
+					value.attributes = a;
+				}, AttributeTargets.Method);
+			}
+			EditorGUI.EndDisabledGroup();
+		}
+	}
+}
