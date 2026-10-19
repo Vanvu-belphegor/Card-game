@@ -29,7 +29,13 @@ public class CardView : MonoBehaviour
         imageSR.sprite = card.Image;
     }
 
-    // Cập nhật mô tả (vd: hiện "(x2)") và nảy nhẹ để người chơi thấy lá vừa được buff
+    // Cập nhật mô tả lặng lẽ (không hiệu ứng) - dùng khi Strength của Hero thay đổi
+    public void UpdateDescription()
+    {
+        description.text = Card.Description;
+    }
+
+    // Cập nhật mô tả (vd: hiện "(5+5)*5 = 50") và nảy nhẹ để người chơi thấy lá vừa được buff
     public Tween Refresh()
     {
         description.text = Card.Description;

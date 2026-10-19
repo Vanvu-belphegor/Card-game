@@ -16,13 +16,15 @@ public class DamageSystem : MonoBehaviour
     [SerializeField] private GameObject damageVFX;
 
     // Công thức sát thương tập trung ở một chỗ: Strength -> Weak -> Vulnerable
-    public static int CalculateDamage(int baseAmount, CombatantView attacker, CombatantView target)
+    // addStrength = false khi Amount đã gồm Strength (lá bài đã tính (Base + Strength) x hệ số nhân ở Effect).
+    public static int CalculateDamage(int baseAmount, CombatantView attacker, CombatantView target, bool addStrength = true)
     {
         float damage = baseAmount;
 
         if (attacker != null)
         {
-            damage += attacker.GetStatusEffectStacks(StatusEffectType.STRENGTH);
+            if (addStrength)
+                damage += attacker.GetStatusEffectStacks(StatusEffectType.STRENGTH);
             if (attacker.GetStatusEffectStacks(StatusEffectType.WEAK) > 0)
                 damage *= 0.75f;
         }
@@ -39,7 +41,7 @@ public class DamageSystem : MonoBehaviour
             // Chỉ bỏ qua mục tiêu đã bị Destroy (vd: đã chết và bị xóa khỏi bàn)
             if (target == null) continue;
 
-            int finalDamage = CalculateDamage(dealDamageGA.Amount, dealDamageGA.Caster, target);
+            int finalDamage = CalculateDamage(dealDamageGA.Amount, dealDamageGA.Caster, target, !dealDamageGA.IncludesStrength);
             target.Damage(finalDamage);
 
             GameObject vfx = Instantiate(damageVFX, target.transform.position, Quaternion.identity);

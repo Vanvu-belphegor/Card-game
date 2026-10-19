@@ -19,6 +19,8 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
         ActionSystem.AttachPerformer<MultiplyCardPowerGA>(MultiplyCardPowerPerformer);
+        // Strength đổi thì số trong mô tả các lá đang ở tay cũng đổi theo
+        ActionSystem.SubscribeReaction<AddStatusEffectGA>(RefreshHandDescriptions, ReactionTiming.POST);
     }
 
     void OnDisable()
@@ -27,6 +29,7 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
         ActionSystem.DetachPerformer<MultiplyCardPowerGA>();
+        ActionSystem.UnsubscribeReaction<AddStatusEffectGA>(RefreshHandDescriptions, ReactionTiming.POST);
     }
 
     //Publics
@@ -78,7 +81,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         foreach (var card in hand)
         {
-            card.ResetMultiplier(); // hết lượt: bỏ buff chưa dùng
+            card.Modifiers.ClearOnTurnEnd(); // hết lượt: bỏ buff chưa dùng
             CardView cardView = handView.RemoveCard(card);
             yield return DiscardCard(cardView);
         }
@@ -95,20 +98,19 @@ public class CardSystem : Singleton<CardSystem>
         SpendManaGA spendManaGA = new(playCardGA.Card.Mana);
         ActionSystem.Instance.AddReaction(spendManaGA);
 
-        // Lấy hệ số nhân rồi dùng hết (chỉ có tác dụng cho lần chơi này)
-        int multiplier = playCardGA.Card.Multiplier;
-        Debug.Log($"[Test] Chơi lá, Multiplier lấy được = {multiplier}");
-        playCardGA.Card.ResetMultiplier();
+        // Chụp bộ modifier của lá này (loại dùng một lần bị xóa ngay), chỉ có tác dụng cho lần chơi này.
+        // Mọi Effect của lá dùng chung một context nên không Effect nào tiêu thụ trùng.
+        EffectContext context = new(playCardGA.Card.Modifiers.ConsumeForPlay());
 
         if (playCardGA.Card.ManualTargetEffect != null)
         {
-            PerformEffectGA performEffectGA = new(playCardGA.Card.ManualTargetEffect, new() { playCardGA.ManualTarget }, multiplier);
+            PerformEffectGA performEffectGA = new(playCardGA.Card.ManualTargetEffect, new() { playCardGA.ManualTarget }, context);
             ActionSystem.Instance.AddReaction(performEffectGA);
         }
         foreach (var effectWrapper in playCardGA.Card.OtherEffects)
         {
             List<CombatantView> targets = effectWrapper.TargetMode.GetTargets();
-            PerformEffectGA performEffectGA = new(effectWrapper.Effect, targets, multiplier);
+            PerformEffectGA performEffectGA = new(effectWrapper.Effect, targets, context);
             ActionSystem.Instance.AddReaction(performEffectGA);
         }
     }
@@ -130,13 +132,24 @@ public class CardSystem : Singleton<CardSystem>
 
         foreach (Card card in chosen)
         {
-            card.MultiplyPower(ga.Factor);
+            card.Modifiers.Add(StatModifier.Multiply(
+                StatKey.All, Mathf.Max(1, ga.Factor), ModifierLifetime.UntilConsumed,
+                sourceId: "MultiplyCardPower:" + System.Guid.NewGuid().ToString("N")));
             CardView view = handView.GetCardView(card);
             if (view != null)
             {
                 Tween tween = view.Refresh();
                 yield return tween.WaitForCompletion();
             }
+        }
+    }
+
+    private void RefreshHandDescriptions(AddStatusEffectGA ga)
+    {
+        foreach (Card card in hand)
+        {
+            CardView view = handView.GetCardView(card);
+            if (view != null) view.UpdateDescription();
         }
     }
 

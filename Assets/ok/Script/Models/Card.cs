@@ -4,8 +4,12 @@ using UnityEngine;
 public class Card
 {
     public string Title => data.name;
-    // Thêm "(x2)" màu vàng khi lá bài đang được nhân chỉ số
-    public string Description => data.Description + (Multiplier > 1 ? $" <color=#FFD54A>(x{Multiplier})</color>" : "");
+    // Mô tả gốc người dùng nhập trong CardData (có thể chứa {damage}, {draw}, {burn}...)
+    public string RawDescription => data.Description;
+
+    // Mô tả đã thay số: {damage} -> "5" hoặc "(5+5)*5 = 50" tùy modifier và Strength hiện tại
+    public string Description =>
+        CardDescription.Build(this, HeroSystem.Instance != null ? HeroSystem.Instance.HeroView : null);
     public Sprite Image => data.Image;
     public Effect ManualTargetEffect => data.ManualTargetEffect;
     public List<AutoTargetEffect> OtherEffects => data.OtherEffects;
@@ -21,10 +25,9 @@ public class Card
     public void AddTag(CardTag tag) { if (tag != null) tags.Add(tag); }
     public void RemoveTag(CardTag tag) { if (tag != null) tags.Remove(tag); }
 
-    // Hệ số nhân chỉ số của lần chơi kế tiếp (lưu trên Card runtime, KHÔNG sửa CardData)
-    public int Multiplier { get; private set; } = 1;
-    public void MultiplyPower(int factor) => Multiplier *= Mathf.Max(1, factor);
-    public void ResetMultiplier() => Multiplier = 1;
+    // Modifier chỉ số runtime của lá bài này (lưu trên Card, KHÔNG sửa CardData).
+    // Hai lá cùng CardData có hai collection riêng nên không ảnh hưởng nhau.
+    public StatModifierCollection Modifiers { get; } = new();
 
     private readonly CardData data;
     public Card(CardData cardData)
