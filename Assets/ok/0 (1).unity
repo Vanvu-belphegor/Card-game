@@ -3414,7 +3414,7 @@ MonoBehaviour:
   m_fontSizeBase: 5
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 1
+  m_fontSizeMin: 4
   m_fontSizeMax: 5
   m_fontStyle: 0
   m_HorizontalAlignment: 2
@@ -3426,7 +3426,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -3629,8 +3629,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0294, y: -1.5981}
-  m_SizeDelta: {x: 3.6185, y: 1.6479}
+  m_AnchoredPosition: {x: 0.0043, y: -1.5645}
+  m_SizeDelta: {x: 3.224, y: 1.3111}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &6784682835541213900
 Transform:

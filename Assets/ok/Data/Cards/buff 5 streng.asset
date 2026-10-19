@@ -12,35 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08ad1585102a84143b63fa685d993735, type: 3}
   m_Name: buff 5 streng
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "nh\xE2n 2 Dm"
+  <Description>k__BackingField: "nh\xE2n 5 streng"
   <Mana>k__BackingField: 0
-  <Image>k__BackingField: {fileID: 0}
-  <Type>k__BackingField: 0
+  <Image>k__BackingField: {fileID: -214298916, guid: 080cb6d98b00c2645b2c41df5f69bc78, type: 3}
+  <Type>k__BackingField: 2
   <ManualTags>k__BackingField: []
   <ExcludedTags>k__BackingField: []
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
-      rid: 4224675747134177281
+      rid: 4224675951649226755
     <Effect>k__BackingField:
-      rid: 4224675747134177282
+      rid: 4224675951649226754
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4224675747134177281
-      type: {class: NoTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 4224675747134177282
-      type: {class: MultiplyCardPowerEffect, ns: , asm: Assembly-CSharp}
+    - rid: 4224675951649226754
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
-        factor: 2
-        filter:
-          type: 0
-          anyOf:
-          - {fileID: 11400000, guid: fd5b5727e03128948b467b45c9c70b40, type: 2}
-          allOf: []
-          noneOf: []
-        maxCards: 10
+        statusEffectType: 3
+        stackCount: 5
+    - rid: 4224675951649226755
+      type: {class: HeroTM, ns: , asm: Assembly-CSharp}
+      data: 
