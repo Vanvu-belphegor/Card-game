@@ -11,4 +11,8 @@ public abstract class Effect
     {
         return GetGameAction(targets, caster);
     }
+
+    // Khóa để tra bảng TagRules. Mặc định là tên class.
+    // Effect có nhiều biến thể (vd status) thì override để phân biệt.
+    public virtual string TagKey => GetType().Name;
 }

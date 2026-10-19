@@ -9,4 +9,7 @@ public class AddStatusEffectEffect : Effect
     {
         return new AddStatusEffectGA(statusEffectType, stackCount, targets);
     }
+
+    // Cùng một class nhưng Burn/Poison/Armor... cần nhãn khác nhau -> khóa theo loại status
+    public override string TagKey => "Status:" + statusEffectType;
 }

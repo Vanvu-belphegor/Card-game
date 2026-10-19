@@ -11,12 +11,15 @@ public class Card
     public List<AutoTargetEffect> OtherEffects => data.OtherEffects;
     public int Mana { get; private set; }
 
-    // Phân loại: Type cố định, Tags là bản sao runtime nên có thể thêm/bớt trong trận
+    // Phân loại: Type cố định. Nhãn là bản runtime nên có thể thêm/bớt trong trận.
     public CardType Type => data.Type;
-    public CardTags Tags { get; private set; }
-    public bool HasTag(CardTags tag) => (Tags & tag) == tag;
-    public void AddTag(CardTags tag) => Tags |= tag;
-    public void RemoveTag(CardTags tag) => Tags &= ~tag;
+
+    // Nhãn lúc chạy = luật theo effect + nhãn tick tay - nhãn loại trừ (xem TagRules.ResolveTags)
+    private readonly HashSet<CardTag> tags;
+    public IReadOnlyCollection<CardTag> Tags => tags;
+    public bool HasTag(CardTag tag) => tag != null && tags.Contains(tag);
+    public void AddTag(CardTag tag) { if (tag != null) tags.Add(tag); }
+    public void RemoveTag(CardTag tag) { if (tag != null) tags.Remove(tag); }
 
     // Hệ số nhân chỉ số của lần chơi kế tiếp (lưu trên Card runtime, KHÔNG sửa CardData)
     public int Multiplier { get; private set; } = 1;
@@ -28,6 +31,6 @@ public class Card
     {
         data = cardData;
         Mana = cardData.Mana;
-        Tags = cardData.Tags;
+        tags = TagRules.ResolveTags(cardData);
     }
 }

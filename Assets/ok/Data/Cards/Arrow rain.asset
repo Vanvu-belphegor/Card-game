@@ -16,6 +16,8 @@ MonoBehaviour:
     k\u1EBB \u0111\u1ECBch"
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: 41f119c537e3879479d7924ac469256f, type: 3}
+  <Type>k__BackingField: 1
+  <Tags>k__BackingField: 0
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:

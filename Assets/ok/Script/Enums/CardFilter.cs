@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Bộ lọc bài dùng chung cho mọi effect "tìm bài". Chỉnh trong Inspector.
-// Bộ lọc để trống = khớp mọi lá.
+// Bộ lọc để trống = khớp mọi lá. Ô nhãn bỏ trống (None) được bỏ qua.
 [Serializable]
 public class CardFilter
 {
@@ -10,21 +11,52 @@ public class CardFilter
     [SerializeField] private CardType type = CardType.None;
 
     [Tooltip("Lá phải có ÍT NHẤT MỘT trong các nhãn này (để trống = bỏ qua)")]
-    [SerializeField] private CardTags anyOf = CardTags.None;
+    [SerializeField] private List<CardTag> anyOf = new();
 
     [Tooltip("Lá phải có TẤT CẢ các nhãn này")]
-    [SerializeField] private CardTags allOf = CardTags.None;
+    [SerializeField] private List<CardTag> allOf = new();
 
     [Tooltip("Lá KHÔNG được có nhãn nào trong số này")]
-    [SerializeField] private CardTags noneOf = CardTags.None;
+    [SerializeField] private List<CardTag> noneOf = new();
+
+    // Unity cần constructor rỗng để dựng bộ lọc từ Inspector
+    public CardFilter() { }
+
+    // Dựng bộ lọc từ code (cửa sổ Find Cards dùng đúng logic Matches này nên kết quả y hệt trong game)
+    public CardFilter(CardType type, IEnumerable<CardTag> anyOf, IEnumerable<CardTag> allOf, IEnumerable<CardTag> noneOf)
+    {
+        this.type = type;
+        this.anyOf = new List<CardTag>(anyOf);
+        this.allOf = new List<CardTag>(allOf);
+        this.noneOf = new List<CardTag>(noneOf);
+    }
 
     public bool Matches(Card card)
     {
         if (card == null) return false;
         if (type != CardType.None && card.Type != type) return false;
-        if (anyOf != CardTags.None && (card.Tags & anyOf) == 0) return false;
-        if ((card.Tags & allOf) != allOf) return false;
-        if ((card.Tags & noneOf) != 0) return false;
+
+        if (HasAny(card, noneOf)) return false;
+
+        foreach (var tag in allOf)
+            if (tag != null && !card.HasTag(tag)) return false;
+
+        if (CountSet(anyOf) > 0 && !HasAny(card, anyOf)) return false;
+
         return true;
+    }
+
+    private static bool HasAny(Card card, List<CardTag> list)
+    {
+        foreach (var tag in list)
+            if (tag != null && card.HasTag(tag)) return true;
+        return false;
+    }
+
+    private static int CountSet(List<CardTag> list)
+    {
+        int n = 0;
+        foreach (var tag in list) if (tag != null) n++;
+        return n;
     }
 }

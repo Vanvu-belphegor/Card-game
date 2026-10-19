@@ -12,16 +12,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08ad1585102a84143b63fa685d993735, type: 3}
   m_Name: x2Dm
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: 
+  <Description>k__BackingField: "nh\xE2n 2 Dm"
   <Mana>k__BackingField: 0
   <Image>k__BackingField: {fileID: 0}
   <Type>k__BackingField: 0
-  <Tags>k__BackingField: 0
+  <ManualTags>k__BackingField: []
+  <ExcludedTags>k__BackingField: []
   <ManualTargetEffect>k__BackingField:
     rid: -2
-  <OtherEffects>k__BackingField: []
+  <OtherEffects>k__BackingField:
+  - <TargetMode>k__BackingField:
+      rid: 4224675747134177281
+    <Effect>k__BackingField:
+      rid: 4224675747134177282
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 4224675747134177281
+      type: {class: NoTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 4224675747134177282
+      type: {class: MultiplyCardPowerEffect, ns: , asm: Assembly-CSharp}
+      data:
+        factor: 2
+        filter:
+          type: 0
+          anyOf:
+          - {fileID: 11400000, guid: fd5b5727e03128948b467b45c9c70b40, type: 2}
+          allOf: []
+          noneOf: []
+        maxCards: 10

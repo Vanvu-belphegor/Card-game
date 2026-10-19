@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474fcdf4816f80947b381d8934e02ed0, type: 3}
+  m_Name: TagRules
+  m_EditorClassIdentifier: 
+  rules:
+  - key: Status:BURN
+    tags:
+    - {fileID: 11400000, guid: 98106cc813d90b3458c8ad78b6513402, type: 2}
+    - {fileID: 11400000, guid: 06d8746fd69f7774c89d18f7e21ab31e, type: 2}
+    - {fileID: 11400000, guid: 55bd4e21d79cdd24ebd89cbc5eb85d25, type: 2}
+  - key: Status:POISON
+    tags:
+    - {fileID: 11400000, guid: cabb31db9b10f884486ee59fb6ffb691, type: 2}
+    - {fileID: 11400000, guid: 06d8746fd69f7774c89d18f7e21ab31e, type: 2}
+  - key: Status:ARMOR
+    tags:
+    - {fileID: 11400000, guid: 6826ee6cf52c77a4fb42a278fe8dc8be, type: 2}
+  - key: Status:STRENGTH
+    tags:
+    - {fileID: 11400000, guid: fe044f25dba25944583221c9fd056efe, type: 2}
+  - key: Status:WEAK
+    tags:
+    - {fileID: 11400000, guid: 06d8746fd69f7774c89d18f7e21ab31e, type: 2}
+  - key: Status:VULNERABLE
+    tags:
+    - {fileID: 11400000, guid: 06d8746fd69f7774c89d18f7e21ab31e, type: 2}
+  - key: DealDamageEffect
+    tags:
+    - {fileID: 11400000, guid: fd5b5727e03128948b467b45c9c70b40, type: 2}
+  - key: DrawCardsEffect
+    tags:
+    - {fileID: 11400000, guid: ffcb03fa82ad24f4384a300f4f390e70, type: 2}
+  - key: MultiplyCardPowerEffect
+    tags:
+    - {fileID: 11400000, guid: 06d8746fd69f7774c89d18f7e21ab31e, type: 2}
