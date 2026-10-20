@@ -20,6 +20,8 @@ public class CardView : MonoBehaviour
     private Quaternion dragStartRotation;
 
     public Card Card { get; private set; }
+    // Bật khi lá chỉ để hiển thị (vd: panel chọn bài): tắt hover / kéo / chơi bài
+    public bool InteractionLocked { get; set; }
     public void Setup(Card card)
     {
         Card = card;
@@ -44,21 +46,21 @@ public class CardView : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (!Interactions.Instance.PlayerCanHover()) return;
+        if (InteractionLocked || !Interactions.Instance.PlayerCanHover()) return;
         wrapper.SetActive(false);
         Vector3 pos = new(transform.position.x, -2, 0);
         CardViewHoverSystem.Instance.Show(Card, pos);
     }
     void OnMouseExit()
     {
-        if (!Interactions.Instance.PlayerCanHover()) return;
+        if (InteractionLocked || !Interactions.Instance.PlayerCanHover()) return;
         CardViewHoverSystem.Instance.Hide();
         wrapper.SetActive(true);
     }
 
     void OnMouseDown()
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (InteractionLocked || !Interactions.Instance.PlayerCanInteract()) return;
         if (Card.ManualTargetEffect != null)
         {
             ManualTargetSystem.Instance.StartTargeting(transform.position);
@@ -77,14 +79,14 @@ public class CardView : MonoBehaviour
 
     void OnMouseDrag()
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (InteractionLocked || !Interactions.Instance.PlayerCanInteract()) return;
         if (Card.ManualTargetEffect != null) return;
         transform.position = MouseUtil.GetMousePositionInWorldSpace(-1);
     }
 
     void OnMouseUp()
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (InteractionLocked || !Interactions.Instance.PlayerCanInteract()) return;
         if (Card.ManualTargetEffect != null)
         {
             EnemyView target = ManualTargetSystem.Instance.EndTargeting(MouseUtil.GetMousePositionInWorldSpace(-1));

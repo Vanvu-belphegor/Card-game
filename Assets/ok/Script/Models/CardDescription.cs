@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 // Dựng mô tả lá bài.
 // - Chỉ hiện KẾT QUẢ cuối cùng (không còn công thức "(5+5)*5 = 50").
@@ -46,8 +47,18 @@ public static class CardDescription
 
             replacedAny = true;
             StatBreakdown b = StatCalculator.Breakdown(s.baseValue, s.key, modifiers);
-            string text = b.Result.ToString(CultureInfo.InvariantCulture);
-            return b.IsModified ? $"<b><color={Highlight}>{text}</color></b>" : $"<b>{text}</b>";
+            int value = b.Result;
+            bool changed = b.IsModified;
+
+            // Hero đang bị Weak: sát thương x0.75 (cùng công thức với DamageSystem). Vulnerable phụ thuộc mục tiêu nên không tính ở đây.
+            if (s.key.Kind == StatKind.Damage && hero != null && hero.GetStatusEffectStacks(StatusEffectType.WEAK) > 0)
+            {
+                value = Mathf.Max(0, Mathf.FloorToInt(value * 0.75f));
+                changed = true;
+            }
+
+            string text = value.ToString(CultureInfo.InvariantCulture);
+            return changed ? $"<b><color={Highlight}>{text}</color></b>" : $"<b>{text}</b>";
         });
 
         // Lá chưa có số nào để thay: hiện "(x2)" để người chơi vẫn thấy lá đang được buff

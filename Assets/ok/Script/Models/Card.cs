@@ -29,6 +29,9 @@ public class Card
     // Hai lá cùng CardData có hai collection riêng nên không ảnh hưởng nhau.
     public StatModifierCollection Modifiers { get; } = new();
 
+    // Asset CardData gốc của lá (dùng để so khớp bộ lọc "Cards")
+    public CardData Data => data;
+
     private readonly CardData data;
     public Card(CardData cardData)
     {

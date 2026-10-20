@@ -19,6 +19,9 @@ public class CardFilter
     [Tooltip("Lá KHÔNG được có nhãn nào trong số này")]
     [SerializeField] private List<CardTag> noneOf = new();
 
+    [Tooltip("Kéo thả asset CardData vào đây. Khớp MỘT trong các lá này. Để trống = bỏ qua")]
+    [SerializeField] private List<CardData> cards = new();
+
     // Unity cần constructor rỗng để dựng bộ lọc từ Inspector
     public CardFilter() { }
 
@@ -36,6 +39,8 @@ public class CardFilter
         if (card == null) return false;
         if (type != CardType.None && card.Type != type) return false;
 
+        if (!MatchesName(card)) return false;
+
         if (HasAny(card, noneOf)) return false;
 
         foreach (var tag in allOf)
@@ -44,6 +49,18 @@ public class CardFilter
         if (CountSet(anyOf) > 0 && !HasAny(card, anyOf)) return false;
 
         return true;
+    }
+
+    private bool MatchesName(Card card)
+    {
+        bool any = false;
+        foreach (CardData data in cards)
+        {
+            if (data == null) continue;
+            any = true;
+            if (card.Data == data) return true;
+        }
+        return !any; // không kéo lá nào vào = không lọc theo lá
     }
 
     private static bool HasAny(Card card, List<CardTag> list)

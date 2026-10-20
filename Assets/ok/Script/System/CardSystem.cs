@@ -19,6 +19,7 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
         ActionSystem.AttachPerformer<MultiplyCardPowerGA>(MultiplyCardPowerPerformer);
+        ActionSystem.AttachPerformer<FindAndDrawCardsGA>(FindAndDrawCardsPerformer);
         // Strength đổi thì số trong mô tả các lá đang ở tay cũng đổi theo
         ActionSystem.SubscribeReaction<AddStatusEffectGA>(RefreshHandDescriptions, ReactionTiming.POST);
     }
@@ -29,6 +30,7 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
         ActionSystem.DetachPerformer<MultiplyCardPowerGA>();
+        ActionSystem.DetachPerformer<FindAndDrawCardsGA>();
         ActionSystem.UnsubscribeReaction<AddStatusEffectGA>(RefreshHandDescriptions, ReactionTiming.POST);
     }
 
@@ -79,9 +81,13 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
     {
+        // Hết lượt: dọn buff tạm của MỌI lá (tay, chồng rút, chồng bỏ), không chỉ lá còn trong tay
+        ClearTemporaryModifiers(hand);
+        ClearTemporaryModifiers(drawPile);
+        ClearTemporaryModifiers(discardPile);
+
         foreach (var card in hand)
         {
-            card.Modifiers.ClearOnTurnEnd(); // hết lượt: bỏ buff chưa dùng
             CardView cardView = handView.RemoveCard(card);
             yield return DiscardCard(cardView);
         }
@@ -144,6 +150,47 @@ public class CardSystem : Singleton<CardSystem>
         }
     }
 
+    // Tìm bài trong các vùng được tick (bộ bài / bài bỏ) rồi đưa lên tay.
+    // Chọn ngẫu nhiên giữa mọi lá khớp, tối đa MaxCards lá (<= 0 = tất cả). Không có lá khớp thì bỏ qua êm.
+    private IEnumerator FindAndDrawCardsPerformer(FindAndDrawCardsGA ga)
+    {
+        List<(Card card, CardZone zone)> candidates = new();
+        if ((ga.Zones & CardZoneMask.DrawPile) != 0)
+            foreach (Card c in FindCards(CardZone.DrawPile, ga.Filter)) candidates.Add((c, CardZone.DrawPile));
+        if ((ga.Zones & CardZoneMask.DiscardPile) != 0)
+            foreach (Card c in FindCards(CardZone.DiscardPile, ga.Filter)) candidates.Add((c, CardZone.DiscardPile));
+
+        if (candidates.Count == 0) yield break;
+
+        // Người chơi tự chọn: hiện panel, chờ chọn xong rồi mới chuyển bài lên tay
+        if (ga.Mode == CardSelectionMode.PlayerChoice)
+        {
+            // Xáo thứ tự hiển thị để người chơi không đoán được thứ tự chồng bài
+            for (int i = candidates.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                (candidates[i], candidates[j]) = (candidates[j], candidates[i]);
+            }
+
+            CardSelectionSystem.SelectionResult result = new();
+            yield return CardSelectionSystem.Get().Choose(candidates, ga.MaxCards, result);
+            foreach (var picked in result.Picked)
+                yield return MoveCardToHand(picked.card, picked.zone, picked.position);
+            yield break;
+        }
+
+        List<(Card card, CardZone zone)> chosen = new();
+        while (candidates.Count > 0 && (ga.MaxCards <= 0 || chosen.Count < ga.MaxCards))
+        {
+            int i = Random.Range(0, candidates.Count);
+            chosen.Add(candidates[i]);
+            candidates.RemoveAt(i);
+        }
+
+        foreach (var (card, zone) in chosen)
+            yield return MoveCardToHand(card, zone);
+    }
+
     private void RefreshHandDescriptions(AddStatusEffectGA ga)
     {
         foreach (Card card in hand)
@@ -159,6 +206,24 @@ public class CardSystem : Singleton<CardSystem>
         Card card = drawPile.Draw();
         hand.Add(card);
         CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint.position, drawPilePoint.rotation);
+        yield return handView.AddCard(cardView);
+    }
+
+    private static void ClearTemporaryModifiers(List<Card> cards)
+    {
+        foreach (Card card in cards) card.Modifiers.ClearOnTurnEnd();
+    }
+
+    // Chuyển CHÍNH đối tượng Card từ vùng nguồn lên tay (không tạo bản sao nên giữ nguyên modifier/nhãn).
+    // Lá bay ra từ đúng chồng nguồn.
+    private IEnumerator MoveCardToHand(Card card, CardZone sourceZone, Vector3? startPosition = null)
+    {
+        List<Card> source = sourceZone == CardZone.DiscardPile ? discardPile : drawPile;
+        if (!source.Remove(card)) yield break; // lá không còn ở vùng nguồn: bỏ qua
+
+        hand.Add(card);
+        Transform point = sourceZone == CardZone.DiscardPile ? discardPilePoint : drawPilePoint;
+        CardView cardView = CardViewCreator.Instance.CreateCardView(card, startPosition ?? point.position, point.rotation);
         yield return handView.AddCard(cardView);
     }
 

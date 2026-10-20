@@ -49,7 +49,7 @@ public static class StatCalculator
 
     public static StatBreakdown Breakdown(int baseValue, StatKey key, IEnumerable<StatModifier> modifiers, int minValue = 0)
     {
-        if (modifiers == null) return new StatBreakdown(baseValue, 0, 1, baseValue);
+        if (modifiers == null) return new StatBreakdown(baseValue, 0, 1, Math.Max(minValue, baseValue));
 
         double flat = 0;
         double multiplier = 1;
@@ -64,7 +64,7 @@ public static class StatCalculator
         }
 
         // Không có modifier nào áp dụng: giữ nguyên giá trị gốc (hành vi như trước refactor)
-        if (!anyApplied) return new StatBreakdown(baseValue, 0, 1, baseValue);
+        if (!anyApplied) return new StatBreakdown(baseValue, 0, 1, Math.Max(minValue, baseValue));
 
         double raw = (baseValue + flat) * multiplier;
         int result = Math.Max(minValue, (int)Math.Floor(raw + Epsilon));
