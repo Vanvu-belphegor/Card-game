@@ -4,6 +4,7 @@ using UnityEngine;
 public class MatchSetupSystem : MonoBehaviour
 {
     [SerializeField] private HeroData heroData;
+    [Tooltip("Cũ: nên dùng danh sách Perks trong HeroData")]
     [SerializeField] private PerkData perkData;
     [SerializeField] private List<EnemyData> enemyDatas;
 
@@ -17,7 +18,12 @@ public class MatchSetupSystem : MonoBehaviour
         HeroSystem.Instance.Setup(heroData);
         EnemySystem.Instance.Setup(enemyDatas);
         CardSystem.Instance.Setup(heroData.Deck);
-        PerkSystem.Instance.AddPerk(new Perk(perkData));
+        // Perk đầu trận của Hero: danh sách trong HeroData. Ô perkData cũ vẫn dùng được (không thêm trùng).
+        if (heroData.Perks != null)
+            foreach (PerkData p in heroData.Perks)
+                if (p != null) PerkSystem.Instance.AddPerk(new Perk(p));
+        if (perkData != null && (heroData.Perks == null || !heroData.Perks.Contains(perkData)))
+            PerkSystem.Instance.AddPerk(new Perk(perkData));
         DrawCardsGA drawCardsGA = new(5);
         ActionSystem.Instance.Perform(drawCardsGA);
 

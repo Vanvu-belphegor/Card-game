@@ -63,6 +63,46 @@ public class CombatantView : MonoBehaviour
         }
         statusEffectsUI.UpdateStatusEffectUI(type, GetStatusEffectStacks(type));
     }
+    // ── Icon perk (hiện phía trên nhân vật, tự tạo bằng code) ──
+    private readonly List<(Perk perk, GameObject icon)> perkIcons = new();
+
+    public void AddPerkIcon(Perk perk)
+    {
+        if (perk.Image == null || spriteRenderer == null) return;
+        GameObject go = new("PerkIcon");
+        go.transform.SetParent(transform, false);
+        SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = perk.Image;
+        sr.sortingLayerID = spriteRenderer.sortingLayerID;
+        sr.sortingOrder = spriteRenderer.sortingOrder + 5;
+        perkIcons.Add((perk, go));
+        LayoutPerkIcons();
+    }
+
+    public void RemovePerkIcon(Perk perk)
+    {
+        int i = perkIcons.FindIndex(p => p.perk == perk);
+        if (i < 0) return;
+        Destroy(perkIcons[i].icon);
+        perkIcons.RemoveAt(i);
+        LayoutPerkIcons();
+    }
+
+    private void LayoutPerkIcons()
+    {
+        const float size = 0.5f, gap = 0.6f; // kích thước icon và khoảng cách (đơn vị thế giới)
+        Bounds b = spriteRenderer.bounds;
+        float parentScale = Mathf.Max(0.0001f, Mathf.Abs(transform.lossyScale.x));
+        for (int i = 0; i < perkIcons.Count; i++)
+        {
+            GameObject go = perkIcons[i].icon;
+            SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
+            float spriteSize = Mathf.Max(0.0001f, Mathf.Max(sr.sprite.bounds.size.x, sr.sprite.bounds.size.y));
+            go.transform.localScale = Vector3.one * (size / spriteSize / parentScale);
+            go.transform.position = new Vector3(b.center.x + (i - (perkIcons.Count - 1) / 2f) * gap, b.max.y + 0.4f, b.center.z);
+        }
+    }
+
     public int GetStatusEffectStacks(StatusEffectType type)
     {
         if (statusEffects.ContainsKey(type)) return statusEffects[type];

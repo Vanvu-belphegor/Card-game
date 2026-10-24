@@ -39,9 +39,16 @@ MonoBehaviour:
         filter:
           type: 0
           anyOf:
+          - {fileID: 11400000, guid: 6826ee6cf52c77a4fb42a278fe8dc8be, type: 2}
+          - {fileID: 11400000, guid: fe044f25dba25944583221c9fd056efe, type: 2}
+          - {fileID: 11400000, guid: 98106cc813d90b3458c8ad78b6513402, type: 2}
           - {fileID: 11400000, guid: fd5b5727e03128948b467b45c9c70b40, type: 2}
+          - {fileID: 11400000, guid: 06d8746fd69f7774c89d18f7e21ab31e, type: 2}
+          - {fileID: 11400000, guid: ffcb03fa82ad24f4384a300f4f390e70, type: 2}
+          - {fileID: 11400000, guid: cabb31db9b10f884486ee59fb6ffb691, type: 2}
           allOf: []
           noneOf: []
           cards: []
-        zones: 1
-        maxCards: 1
+        zones: -1
+        mode: 1
+        maxCards: 5

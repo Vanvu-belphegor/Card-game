@@ -85,6 +85,7 @@ public class EnemySystem : Singleton<EnemySystem>
     {
         // Tránh kill 2 lần cùng một địch (vd: Poison và Burn cùng giết)
         if (killEnemyGA.EnemyView == null || !enemyBoardView.EnemyViews.Contains(killEnemyGA.EnemyView)) yield break;
+        PerkSystem.Instance.RemovePerksOf(killEnemyGA.EnemyView); // gỡ perk của địch đã chết
         yield return enemyBoardView.RemoveEnemy(killEnemyGA.EnemyView);
     }
 }

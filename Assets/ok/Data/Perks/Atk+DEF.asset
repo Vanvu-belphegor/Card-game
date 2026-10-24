@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e762a113b1697c4babf63d78d1a3000, type: 3}
+  m_Name: Atk+DEF
+  m_EditorClassIdentifier: 
+  <Image>k__BackingField: {fileID: 2125737359283935466, guid: f7043b7291f49844b9671b3d3dedcbb5, type: 3}
+  <PerkCondition>k__BackingField:
+    rid: 4224675980441026561
+  <AutoTargetEffect>k__BackingField:
+    rid: 4224675980441026562
+  <UseAutoTarget>k__BackingField: 1
+  <UseActionCasterAsTarget>k__BackingField: 0
+  <UseOwnerAsTarget>k__BackingField: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 4224675980441026561
+      type: {class: OnOwnerAttackCondition, ns: , asm: Assembly-CSharp}
+      data:
+        reactionTiming: 0
+    - rid: 4224675980441026562
+      type: {class: AutoTargetEffect, ns: , asm: Assembly-CSharp}
+      data:
+        <TargetMode>k__BackingField:
+          rid: 4224675980441026564
+        <Effect>k__BackingField:
+          rid: 4224675980441026563
+    - rid: 4224675980441026563
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 0
+        stackCount: 3
+    - rid: 4224675980441026564
+      type: {class: AllEnemiesTM, ns: , asm: Assembly-CSharp}
+      data: 

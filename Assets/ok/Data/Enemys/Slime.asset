@@ -15,3 +15,7 @@ MonoBehaviour:
   <Image>k__BackingField: {fileID: 21300000, guid: ab4b55797f12fdf4f92a9d9cf7272e64, type: 3}
   <Health>k__BackingField: 30
   <AttackPower>k__BackingField: 1
+  <Perks>k__BackingField:
+  - {fileID: 11400000, guid: c7714fd2402bfe24a86d597988fc3414, type: 2}
+  - {fileID: 11400000, guid: c7714fd2402bfe24a86d597988fc3414, type: 2}
+  - {fileID: 11400000, guid: c7714fd2402bfe24a86d597988fc3414, type: 2}

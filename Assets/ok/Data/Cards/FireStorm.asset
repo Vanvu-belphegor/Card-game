@@ -17,7 +17,9 @@ MonoBehaviour:
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <Type>k__BackingField: 1
-  <Tags>k__BackingField: 0
+  <ManualTags>k__BackingField:
+  - {fileID: 11400000, guid: fd5b5727e03128948b467b45c9c70b40, type: 2}
+  <ExcludedTags>k__BackingField: []
   <ManualTargetEffect>k__BackingField:
     rid: -2
   <OtherEffects>k__BackingField:

@@ -27,3 +27,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 08fc6a91ee8e52d45bbcd009dfea1808, type: 2}
   - {fileID: 11400000, guid: ca47be215ee347646b116b292c5a8c40, type: 2}
   - {fileID: 11400000, guid: 5113455128b629441a2811790b40e0b4, type: 2}
+  <Perks>k__BackingField:
+  - {fileID: 0}
